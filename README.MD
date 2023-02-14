@@ -27,5 +27,4 @@
 <li>Решетов Юрий</li>
 </ul>
 
-
 <a href="https://miro.com/app/board/uXjVPnO21qQ=/">MIRO</a>
