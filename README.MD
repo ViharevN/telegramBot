@@ -13,21 +13,23 @@
 того, чтобы взять из приюта какого-либо питомца.***
 
 <h2>Backend:</h2>
-Java 17,
-Maven,
-Spring Boot,
-Spring Web,
-Spring Data,
-Spring JPA,
-GIT,
-REST,
-Swagger,
-Stream API,
-SQL,
-PostgreSQL
+
+    Java 17, 
+    Maven,
+    Spring Boot,
+    Spring Web,
+    Spring Data,
+    Spring JPA,
+    GIT,
+    REST,
+    Swagger,
+    Stream API,
+    SQL,
+    PostgreSQL
 
 <h2>Front-end:</h2>
-Telegram
+    Telegram
+
 <h2>В проекте участвуют:</h2>
 <ul>
 <li><a href="https://github.com/ViharevN">Вихарев Николай</a></li>
@@ -39,3 +41,4 @@ Telegram
 </ul>
 <h3>Task-tracker</h3>
 <ul><a href="https://miro.com/app/board/uXjVPnO21qQ=/">MIRO</a></ul>
+
