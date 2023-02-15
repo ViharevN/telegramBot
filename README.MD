@@ -1,31 +1,44 @@
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
+![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+
 <h2>ТЕЛЕГРАМ-БОТ ДЛЯ ПРИЮТА ЖИВОТНЫХ.</h2>
-Телеграм-бот, который отвечает на вопросы людей, интересующихся о том, что необходимо сделать для того, чтобы взять из приюта какого-либо питомца.
 
-<h3>В проекте используются:</h3>
+***Телеграм-бот, который отвечает на вопросы людей, 
+интересующихся о том, что необходимо сделать для 
+того, чтобы взять из приюта какого-либо питомца.***
 
-    Backend:
-        1. Java 17
-        2. Maven
-        3. Spring Boot
-        4. Spring Web
-        5. Spring Data
-        6. Spring JPA
-        7. GIT
-        8. REST
-        9. Swagger
-        10. Stream API
-    SQL:
-        PostgreSQL
+<h2>Backend:</h2>
+- [x] Java 17 
+- [x] Maven
+- [x] Spring Boot
+- [x] Spring Web
+- [x] Spring Data
+- [x] Spring JPA
+- [x] GIT
+- [x] REST
+- [x] Swagger
+- [x] Stream API
+- [ ] SQL:
+- [x] PostgreSQL
 
+<h2>Front-end:</h2>
+-[x] Telegram
 <h2>В проекте участвуют:</h2>
 <ul>
 <li><a href="https://github.com/ViharevN">Вихарев Николай</a></li>
-<li>Хотенов Василий</li>
-<li>Кузьминых Алексей</li>
-<li>Заиграева Ольга</li>
-<li>Мухаметзянов Эдуард</li>
-<li>Решетов Юрий</li>
+<li><a href="https://github.com/VasiliyKhotenov13">Хотенов Василий</a></li>
+<li><a href="https://github.com/Al3x3y86">Кузьминых Алексей</a></li>
+<li><a href="https://github.com/olgazaigraewa">Заиграева Ольга</a></li>
+<li><a href="https://github.com/Edward-Kazan-Skypro">Мухаметзянов Эдуард</a></li>
+<li><a href="https://github.com/yura178500">Решетов Юрий</a></li>
 </ul>
 
-
+Наш task-tracker
 <a href="https://miro.com/app/board/uXjVPnO21qQ=/">MIRO</a>
+
+
+
