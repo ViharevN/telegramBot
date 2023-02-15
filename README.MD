@@ -11,22 +11,22 @@
 интересующихся о том, что необходимо сделать для 
 того, чтобы взять из приюта какого-либо питомца.***
 
-<h2>Backend:</h2>
-- [x] Java 17 
-- [x] Maven
-- [x] Spring Boot
-- [x] Spring Web
-- [x] Spring Data
-- [x] Spring JPA
-- [x] GIT
-- [x] REST
-- [x] Swagger
-- [x] Stream API
-- [ ] SQL:
-- [x] PostgreSQL
+    <h2>Backend:</h2>
+        Java 17 
+        Maven
+        Spring Boot
+        Spring Web
+        Spring Data
+        Spring JPA
+        GIT
+        REST
+        Swagger
+        Stream API
+        SQL:
+        PostgreSQL
 
-<h2>Front-end:</h2>
--[x] Telegram
+    <h2>Front-end:</h2>
+        Telegram
 <h2>В проекте участвуют:</h2>
 <ul>
 <li><a href="https://github.com/ViharevN">Вихарев Николай</a></li>
@@ -37,8 +37,9 @@
 <li><a href="https://github.com/yura178500">Решетов Юрий</a></li>
 </ul>
 
-Наш task-tracker
+![Наш task-tracker](https://miro.com/app/board/uXjVPnO21qQ=/)
 <a href="https://miro.com/app/board/uXjVPnO21qQ=/">MIRO</a>
+
 
 
 
