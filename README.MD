@@ -27,7 +27,6 @@
 
 <h2>Front-end:</h2>
 -[x] Telegram
-
 <h2>В проекте участвуют:</h2>
 <ul>
 <li><a href="https://github.com/ViharevN">Вихарев Николай</a></li>
