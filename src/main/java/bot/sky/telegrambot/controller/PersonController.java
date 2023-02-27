@@ -34,18 +34,23 @@ public class PersonController {
     }
 
     @PutMapping("/update/{id}")
-    public Person updatePerson(@RequestBody Person person, @PathVariable long id) {
-        Optional<Person> person1 = personRepository.findById(id);
-        if (person.equals(person1)) {
-            return personRepository.save(person);
-        }
-        return null;
+    public ResponseEntity<Person> updatePerson(@RequestBody Person personDetails, @PathVariable long id) {
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException("Person not exist with id: " + id));
+        person.setFirstName(personDetails.getFirstName());
+        person.setLastName(personDetails.getLastName());
+        person.setRoles(personDetails.getRoles());
+        Person person1 = personRepository.save(person);
+        return ResponseEntity.ok().body(person1);
     }
 
     @DeleteMapping("/delete/{id}")
-    public Person deletePersonById(@PathVariable Long id) {
+    public String deletePersonById(@PathVariable Long id) {
+        if (!personRepository.existsById(id)) {
+            throw new PersonNotFoundException("Not found user: " + id);
+        }
         personRepository.deleteById(id);
-        return personRepository.getById(id);
+        return "User: " + id + ", has been deleted";
     }
 
 }

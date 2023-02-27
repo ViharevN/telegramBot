@@ -15,15 +15,21 @@ public class Person {
     private String firstName;
     @Column(name = "lastName")
     private String lastName;
+    @Column(name="description")
+    private String description;
+    @Column(name = "telegramID")
+    private String telegramId;
     @Column(name = "roles")
     private UserRoles roles;
 
     public Person() {
     }
 
-    public Person(String firstName, String lastName, UserRoles roles) {
+    public Person(String firstName, String lastName, String description,String telegramId, UserRoles roles) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.description = description;
+        this.telegramId = telegramId;
         this.roles = roles;
     }
 }
