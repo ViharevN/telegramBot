@@ -3,23 +3,21 @@ package bot.sky.telegrambot.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "dogs")
-public class Dog {
+public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "dogName")
+    @Column(name = "catName")
     private String name;
-    @Column(name = "dogBreed")
+    @Column(name = "catBreed")
     private String breed;
-    @Column(name = "dogAge")
+    @Column(name = "catAge")
     private int age;
 
-    public Dog(String name, String breed, int age) {
+    public Cat(String name, String breed, int age) {
         this.name = name;
         this.breed = breed;
         this.age = age;
