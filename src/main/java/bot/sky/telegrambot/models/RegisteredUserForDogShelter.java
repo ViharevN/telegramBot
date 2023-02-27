@@ -21,6 +21,7 @@ public class RegisteredUserForDogShelter {
 
     private String nameInChat;
 
+
     private String firstName;
 
     private String lastName;

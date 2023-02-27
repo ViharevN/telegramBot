@@ -9,4 +9,5 @@ public class ReportNotFoundException extends RuntimeException {
     public ReportNotFoundException() {
         super("Report is not found!");
     }
+
 }

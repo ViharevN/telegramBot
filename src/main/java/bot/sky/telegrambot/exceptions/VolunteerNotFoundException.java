@@ -9,4 +9,5 @@ public class VolunteerNotFoundException extends RuntimeException {
     public VolunteerNotFoundException() {
         super("Volunteer is not found!");
     }
+
 }

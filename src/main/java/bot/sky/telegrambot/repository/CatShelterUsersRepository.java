@@ -9,4 +9,5 @@ import bot.sky.telegrambot.models.RegisteredUserForCatShelter;
  * @author Мухаметзянов Эдуард
  */
 public interface CatShelterUsersRepository extends CrudRepository<RegisteredUserForCatShelter, Long> {
+
 }

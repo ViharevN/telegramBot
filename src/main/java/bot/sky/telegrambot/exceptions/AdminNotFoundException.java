@@ -9,4 +9,5 @@ public class AdminNotFoundException extends RuntimeException {
     public AdminNotFoundException() {
         super("Admin is not found!");
     }
+
 }

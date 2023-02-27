@@ -19,6 +19,7 @@ public class RegisteredUserForCatShelter {
     @Id
     private Long chatId;
 
+
     private String nameInChat;
 
     private String firstName;

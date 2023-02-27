@@ -9,4 +9,5 @@ import bot.sky.telegrambot.models.Visitor;
  * @author Мухаметзянов Эдуард
  */
 public interface VisitorsRepository extends CrudRepository<Visitor, Long> {
+
 }
