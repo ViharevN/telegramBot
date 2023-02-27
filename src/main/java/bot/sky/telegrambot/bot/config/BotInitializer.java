@@ -9,6 +9,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import bot.sky.telegrambot.bot.TelegramBot;
 
+/** Данный класс инициализирует бота, создавая новую сессию при каждом запуске последнего.
+ * @author Мухаметзянов Эдуард
+ */
 @Slf4j
 @Component
 public class BotInitializer {
@@ -20,6 +23,7 @@ public class BotInitializer {
     /**
      * Метод для инициализации телеграмм-бота
      * @throws TelegramApiException
+     * @author Мухаметзянов Эдуард
      */
     @EventListener({ContextRefreshedEvent.class})
     public void init() throws TelegramApiException {

@@ -5,6 +5,14 @@ import bot.sky.telegrambot.models.Visitor;
 import bot.sky.telegrambot.repository.VisitorsRepository;
 import java.io.*;
 
+/** Данный класс обрабатывает команды (и текст), которые ввел пользователь.
+ * Полученные текстовые команды, в зависимости от содержания, заполняются данными,
+ * получаемыми из текстовых файлов (из папки resources),
+ * где названия файлов соответствуют текстовым командам.
+ *
+ * @author Мухаметзянов Эдуард
+ *
+ */
 @Slf4j
 public class CommandSelector {
 
@@ -21,7 +29,7 @@ public class CommandSelector {
      * Метод для обработки сообщения от пользователя телеграмм-бота.
      * В качестве аргумента принимает текст.
      * @param inputText
-     * @return
+     * @author Мухаметзянов Эдуард
      */
 
     public String selectBotCommand(String inputText, Visitor visitor) {
@@ -48,10 +56,22 @@ public class CommandSelector {
                     return readTextFromFile(fileName);
                 case "/safety_measures_in_dog_shelter":
                 case "/register_user_for_adopt_dog":
+                    fileName = "/register_user_for_adopt_dog";
+                    return readTextFromFile(fileName);
+                case "/register_user":
+                    fileName = "/register_user";
+                    return readTextFromFile(fileName);
+                case "/registration_user_complete":
+                    fileName = "/registration_user_complete";
+                    return readTextFromFile(fileName);
+                case "/registration_user_error":
+                    fileName = "/registration_user_error";
+                    return readTextFromFile(fileName);
+
                 case "/dogs_volunteer":
 
 
-                //Команды, которые отображаются после выбора /adopt_dog
+                    //Команды, которые отображаются после выбора /adopt_dog
                 case "/meeting_with_dog":
                 case "/documents_for_adopting_dog":
                 case "/recommendations_for_transporting":
@@ -61,9 +81,9 @@ public class CommandSelector {
                 case "/initial_appeal_with_dog":
                 case "/contacts_of_cynologists":
                 case "/reasons_for_rejection":
-                //case"/dogs_volunteer":
+                    //case"/dogs_volunteer":
 
-                //Команды, которые отображаются после выбора /cat_shelter
+                    //Команды, которые отображаются после выбора /cat_shelter
                 case "/сat_shelter_address":
                 case "/adopt_cat":
                     saveLastCommand(inputText, visitor);
@@ -73,7 +93,7 @@ public class CommandSelector {
                 case "/register_user_for_adopt_cat":
                 case "/cats_volunteer":
 
-                //Команды, которые отображаются после выбора /adopt_cat
+                    //Команды, которые отображаются после выбора /adopt_cat
                 case "/meeting_with_cat":
                 case "/documents_for_adopting_cat":
                 case "/recommendations_for_transporting_cat":
@@ -81,7 +101,7 @@ public class CommandSelector {
                 case "/improvement_home_for_adult_cat":
                 case "/improvement_home_for_disabled_cat":
                 case "/reasons_for_rejection_cat":
-                //case "/cats_volunteer":
+                    //case "/cats_volunteer":
 
 
                 case "/send_report":
@@ -91,7 +111,7 @@ public class CommandSelector {
                     fileName = "/help";
                     return readTextFromFile(fileName);
                 case "/start":
-                    String welcomeText = "Здравствуйте " + visitor.getName() + "!\n\n";
+                    String welcomeText = "Здравствуйте " + visitor.getNameInChat() + "!\n\n";
                     fileName = "/start";
                     return welcomeText + readTextFromFile(fileName);
                 default:
@@ -102,7 +122,7 @@ public class CommandSelector {
     /**
      * Метод для чтения текстовых данных из файла.
      * @param fileName
-     * @return
+     * @author Мухаметзянов Эдуард
      */
     private String readTextFromFile(String fileName){
         StringBuilder content = new StringBuilder();
@@ -122,6 +142,7 @@ public class CommandSelector {
      * Метод для сохранения в БД выбранной команды меню
      * @param inputText
      * @param visitor
+     * @author Мухаметзянов Эдуард
      */
     private void saveLastCommand(String inputText, Visitor visitor){
         visitor.setLastCommand(inputText);
@@ -132,6 +153,7 @@ public class CommandSelector {
      * Метод для сохранения в БД выбранного типа приюта
      * @param inputText
      * @param visitor
+     * @author Мухаметзянов Эдуард
      */
     private void saveSelectedShelter(String inputText, Visitor visitor){
         visitor.setVisitedShelter(inputText);
