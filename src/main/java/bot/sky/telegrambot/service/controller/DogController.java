@@ -33,5 +33,24 @@ public class DogController {
         return repository.save(dog);
     }
 
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Dog> updateDog(@RequestBody Dog dogNew, @PathVariable long id) {
+        Dog dog = repository.findById(id)
+                .orElseThrow(() -> new DogNotFoundException("Dog not found exist ID: " + id));
 
+        dog.setName(dogNew.getName());
+        dog.setBreed(dogNew.getBreed());
+        dog.setAge(dogNew.getAge());
+        repository.save(dog);
+        return ResponseEntity.ok().body(dog);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public String deleteById(@PathVariable long id) {
+        if (!repository.existsById(id)) {
+            throw new DogNotFoundException("Dog not found, ID:  " + id);
+        }
+        repository.deleteById(id);
+        return "Dog with id: " + id + " has been deleted";
+    }
 }
