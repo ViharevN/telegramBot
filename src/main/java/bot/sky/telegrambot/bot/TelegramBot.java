@@ -1,9 +1,9 @@
 package bot.sky.telegrambot.bot;
 
-import bot.sky.telegrambot.models.RegisteredUserForCatShelter;
-import bot.sky.telegrambot.models.RegisteredUserForDogShelter;
+import bot.sky.telegrambot.models.*;
 import bot.sky.telegrambot.repository.CatShelterUsersRepository;
 import bot.sky.telegrambot.repository.DogShelterUsersRepository;
+import bot.sky.telegrambot.repository.TestUsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -15,7 +15,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import bot.sky.telegrambot.bot.config.BotConfig;
 import bot.sky.telegrambot.bot.service.BotMenuCreator;
 import bot.sky.telegrambot.bot.service.CommandSelector;
-import bot.sky.telegrambot.models.Visitor;
 import bot.sky.telegrambot.repository.VisitorsRepository;
 
 
@@ -37,20 +36,26 @@ public class TelegramBot extends TelegramLongPollingBot {
     final DogShelterUsersRepository dogShelterUsersRepository;
     final CatShelterUsersRepository catShelterUsersRepository;
     final BotMenuCreator botMenuCreator;
+    final CommandSelector commandSelector;
+
+    final TestUsersRepository testUsersRepository;
 
     public TelegramBot(BotConfig botConfig,
                        VisitorsRepository visitorsRepository,
                        DogShelterUsersRepository dogShelterUsersRepository,
                        CatShelterUsersRepository catShelterUsersRepository,
-                       BotMenuCreator botMenuCreator) {
+                       BotMenuCreator botMenuCreator, CommandSelector commandSelector,
+                       TestUsersRepository testUsersRepository) {
         this.botConfig = botConfig;
         this.visitorsRepository = visitorsRepository;
         this.dogShelterUsersRepository = dogShelterUsersRepository;
         this.catShelterUsersRepository = catShelterUsersRepository;
         this.botMenuCreator = botMenuCreator;
+        this.commandSelector = commandSelector;
+        this.testUsersRepository = testUsersRepository;
         try {
             this.execute(new SetMyCommands(
-                    BotMenuCreator.addCommonCommandsToBotMenu(),
+                    botMenuCreator.addFirstCommandsToBotMenu(),
                     new BotCommandScopeDefault(),
                     null));
         } catch (TelegramApiException e) {
@@ -58,31 +63,137 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    //Этот метод надо глубоко переработать!
     @Override
     public void onUpdateReceived(Update update) {
-        if (!visitorsRepository.existsById(update.getMessage().getChatId())) {
-            registerVisitor(update);
-        }
-        var chatId = update.getMessage().getChatId();
-        Visitor visitor = visitorsRepository.findById(chatId).get();
-        String inputText = update.getMessage().getText();
-        //Вот мы получили сообщение, которе пользователь ввел в чате.
-        //Это может быть как готовая команда, так и, например, регистрационные данные.
-        //Значит полученный текст надо проверить:
-        // - если текст начинается с символа /, то это команда для меню;
-        // - если с рег:, то это данные с регистрационными данными пользователя
-        // - прочие данные мы не обрабатываем
-        if (inputText.startsWith("/")) {
-            String outputText = new CommandSelector(visitorsRepository).selectBotCommand(inputText, visitor);
-            sendMessage(chatId, outputText);
-        }
-        if (inputText.startsWith("рег:")) {
-            if (registerUser(inputText, visitor)) {
-                sendMessage(chatId, new CommandSelector(visitorsRepository).selectBotCommand("/registration_user_complete", visitor));
-            } else {
-                sendMessage(chatId, new CommandSelector(visitorsRepository).selectBotCommand("/registration_user_error", visitor));
+        //Получаем  chatId - уникальный идентификатор пользователя
+        //т.е. узнаем кто нам написал
+        Long chatId = update.getMessage().getChatId();
+        //Ищем в БД такого пользователя, и уже исходя из его статуса строится дальнейшее общение
+        //И обновляем Меню для пользователя, соответствующее его статусу
+        //Если пользователь уже есть в БД, то меняем ему отображаемое Меню
+        if (testUsersRepository.existsById(chatId)) {
+            //Для удобства создадим пользователя
+            TestUserForMenu testUserForMenu = testUsersRepository.findById(chatId).get();
+            //Узнаем его внутренни статус и заполняем Меню под него
+            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.NOT_REGISTERED_USER
+                    && testUserForMenu.getVisitedShelter().equals("/dog_shelter")) {
+                try {
+                    execute(new SetMyCommands(
+                            botMenuCreator.addDogShelterUsersCommandsToBotMenu(),
+                            new BotCommandScopeDefault(),
+                            null));
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
+                }
+            }
+            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.NOT_REGISTERED_USER
+                    && testUserForMenu.getVisitedShelter().equals("/cat_shelter")) {
+                try {
+                    execute(new SetMyCommands(
+                            botMenuCreator.addCatShelterUsersCommandsToBotMenu(),
+                            new BotCommandScopeDefault(),
+                            null));
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
+                }
+            }
+
+            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.REGISTERED_USER
+                    && testUserForMenu.getVisitedShelter().equals("/dog_shelter")) {
+                try {
+                    execute(new SetMyCommands(
+                            botMenuCreator.addDogShelterUsersCommandsToBotMenu(),
+                            new BotCommandScopeDefault(),
+                            null));
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
+                }
+            }
+
+            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.REGISTERED_USER
+                    && testUserForMenu.getVisitedShelter().equals("/cat_shelter")) {
+                try {
+                    execute(new SetMyCommands(
+                            botMenuCreator.addCatShelterUsersCommandsToBotMenu(),
+                            new BotCommandScopeDefault(),
+                            null));
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
+                }
+            }
+            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.USER_WITH_PET
+                    && testUserForMenu.getVisitedShelter().equals("/dog_shelter")) {
+                try {
+                    execute(new SetMyCommands(
+                            botMenuCreator.addCommandsToBotMenuForRegisteredUsersAfterAdoptDog(),
+                            new BotCommandScopeDefault(),
+                            null));
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
+                }
+            }
+            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.USER_WITH_PET
+                    && testUserForMenu.getVisitedShelter().equals("/cat_shelter")) {
+                try {
+                    execute(new SetMyCommands(
+                            botMenuCreator.addCommandsToBotMenuForRegisteredUsersAfterAdoptCat(),
+                            new BotCommandScopeDefault(),
+                            null));
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
+                }
             }
         }
+        //А если такого пользователя нет, то выводим приветствие и проводим первичную (скрытую) регистрацию
+        else {
+            String nameInChat = update.getMessage().getChat().getFirstName();
+            String textToSend = "Здравствуйте " + nameInChat + "!\n\n" +
+                    "Пожалуйста, выберите команду /start в Menu";
+            silentRegistration(chatId, textToSend);
+        }
+
+        //Так, меню для пользователя мы обновили.
+        //Теперь начнем обрабатывать поступающие сообщения
+        //Чаще всего будут поступать выбранные пользователем команды из Меню
+        //Значит их обработаем в первую очередь.
+        //Получаем текст, который ввел пользователь
+        String inputText = update.getMessage().getText();
+        //Если введенный текст начинается с "/", то сразу отправляем на обработку
+        if (inputText.startsWith("/")) {
+            String outputText = commandSelector.selectBotCommand(inputText);
+            sendMessage(chatId, outputText);
+        }
+        //Если текст начинается с "рег:", то значит поступили регистрационные данные
+        if (inputText.startsWith("рег:")) {
+
+            //Здесь нужен вызов метода регистрации пользователя - ДОДЕЛАТЬ !
+        }
+        //Если текст начинается с секретного кода ("/dgrgrhtr"), то это заходит в чат волонтер
+        //И для него надо обновить волонтерское меню
+        if (inputText.startsWith("/dgrgrhtr")) {
+            try {
+                execute(new SetMyCommands(
+                        botMenuCreator.addCommandsToBotMenuForVolunteer(),
+                        new BotCommandScopeDefault(),
+                        null));
+            } catch (TelegramApiException e) {
+                log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
+            }
+        }
+        //Здесь же надо прописать обработку полученной фотографии питомца, которая является частью отчета
+
+        //Если текст начинается с "отчет:", то значит пользователь добавляет отчетные данные
+        //Надо продумать как маркировать команды, которые связаны с отправкой отчета !!!!
+
+    }
+
+    private void silentRegistration(Long chatId, String nameInChat) {
+        TestUserForMenu testUserForMenu = new TestUserForMenu();
+        testUserForMenu.setChatId(chatId);
+        testUserForMenu.setNameInChat(nameInChat);
+        testUsersRepository.save(testUserForMenu);
+        log.info("Новый пользователь " + nameInChat + " записан в БД");
     }
 
     /**
@@ -92,6 +203,8 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param update
      * @author Мухаметзянов Эдуард
      */
+
+    // Скорее всего просто УДАЛИТЬ этот метод !!!
     private Visitor registerVisitor(Update update) {
         var chatId = update.getMessage().getChatId();
         var name = update.getMessage().getChat().getFirstName();
@@ -111,6 +224,8 @@ public class TelegramBot extends TelegramLongPollingBot {
      *
      * @author Мухаметзянов Эдуард
      */
+
+    // !!!! ПЕРЕДЕЛАТЬ МЕТОД !!!!
     private boolean registerUser(String inputText, Visitor visitor) {
         //Зарегистрированный пользователь раньше был просто посетителем,
         //Значит часть информации можно получить из экземпляра visitor
@@ -127,7 +242,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String[] words = text.split(";");
         //Если после деления на слова получилось меньше 4 элементов, то во введенной строке чего-то не хватает,
         //а значит и данные для регистрации введены неправильно
-        if (words.length != 4){
+        if (words.length != 4) {
             return false;
         }
         //Теперь из массива получим имя, фамилию, номер телефона и почту
