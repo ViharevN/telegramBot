@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CatShelterUsersRepository extends CrudRepository<RegisteredUserForCatShelter, Long> {
+
 }

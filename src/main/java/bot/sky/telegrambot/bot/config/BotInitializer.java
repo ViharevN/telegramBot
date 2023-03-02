@@ -9,19 +9,23 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import bot.sky.telegrambot.bot.TelegramBot;
 
-/** Данный класс инициализирует бота, создавая новую сессию при каждом запуске последнего.
+/**
+ * Данный класс инициализирует бота, создавая новую сессию при каждом запуске последнего.
+ *
  * @author Мухаметзянов Эдуард
  */
 @Slf4j
 @Component
 public class BotInitializer {
-   final TelegramBot bot;
+    final TelegramBot bot;
+
     public BotInitializer(TelegramBot bot) {
         this.bot = bot;
     }
 
     /**
      * Метод для инициализации телеграмм-бота
+     *
      * @throws TelegramApiException
      * @author Мухаметзянов Эдуард
      */
@@ -30,8 +34,7 @@ public class BotInitializer {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         try {
             telegramBotsApi.registerBot(bot);
-        }
-        catch (TelegramApiException e) {
+        } catch (TelegramApiException e) {
             log.error("Произошла ошибка: " + e.getMessage());
         }
     }
