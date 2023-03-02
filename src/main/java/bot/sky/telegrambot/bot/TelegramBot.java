@@ -38,6 +38,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     final CatShelterUsersRepository catShelterUsersRepository;
     final BotMenuCreator botMenuCreator;
 
+
     public TelegramBot(BotConfig botConfig,
                        VisitorsRepository visitorsRepository,
                        DogShelterUsersRepository dogShelterUsersRepository,
@@ -92,7 +93,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param update
      * @author Мухаметзянов Эдуард
      */
-    private Visitor registerVisitor(Update update) {
+    public Visitor registerVisitor(Update update) {
         var chatId = update.getMessage().getChatId();
         var name = update.getMessage().getChat().getFirstName();
         Visitor visitor = new Visitor();
@@ -111,7 +112,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      *
      * @author Мухаметзянов Эдуард
      */
-    private boolean registerUser(String inputText, Visitor visitor) {
+    public boolean registerUser(String inputText, Visitor visitor) {
         //Зарегистрированный пользователь раньше был просто посетителем,
         //Значит часть информации можно получить из экземпляра visitor
         //Соберем значения полей, чтобы потом их присвоить
@@ -176,7 +177,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param chatId
      * @param textToSend
      */
-    private void sendMessage(long chatId, String textToSend) {
+    public void sendMessage(long chatId, String textToSend) {
         SendMessage message = new SendMessage();
         //Чтобы отправить сообщение, надо указать кому будем отправлять - а именно его chatId
         message.setChatId(chatId);
@@ -198,5 +199,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     @SuppressWarnings("deprecation")
     public String getBotToken() {
         return botConfig.getToken();
+    }
+
+
+    public void onUpdateReceived(Visitor update) {
     }
 }

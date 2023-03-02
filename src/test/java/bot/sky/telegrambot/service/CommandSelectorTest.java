@@ -1,4 +1,4 @@
 package bot.sky.telegrambot.service;
 
-public class CatService {
+public class CommandSelectorTest {
 }
