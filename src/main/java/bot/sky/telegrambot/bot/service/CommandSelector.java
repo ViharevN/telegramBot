@@ -1,8 +1,8 @@
 package bot.sky.telegrambot.bot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import bot.sky.telegrambot.models.Visitor;
 import bot.sky.telegrambot.repository.VisitorsRepository;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 
@@ -15,6 +15,7 @@ import java.io.*;
  * @author Мухаметзянов Эдуард
  */
 @Slf4j
+@Component
 public class CommandSelector {
 
     private String pathToFiles = "src/main/resources/txt_files_for_menu";
@@ -34,15 +35,16 @@ public class CommandSelector {
      * @author Мухаметзянов Эдуард
      */
 
-    public String selectBotCommand(String inputText, Visitor visitor) {
+    public String selectBotCommand(String inputText) {
+        return readTextFromFile(inputText);
 
-        switch (inputText) {
+       /* switch (inputText) {
             case "/dog_shelter":
-                saveSelectedShelter(inputText, visitor);
+                //saveSelectedShelter(inputText, visitor);
                 fileName = "/dog_shelter";
                 return readTextFromFile(fileName);
             case "/cat_shelter":
-                saveSelectedShelter(inputText, visitor);
+                //saveSelectedShelter(inputText, visitor);
                 fileName = "/cat_shelter";
                 return readTextFromFile(fileName);
 
@@ -53,7 +55,7 @@ public class CommandSelector {
             case "/adopt_dog":
                 //saveLastCommand(inputText, visitor) - запоминаем выбранный пункт меню
                 //м.б. потом пойму как правильно это использовать
-                saveLastCommand(inputText, visitor);
+                //saveLastCommand(inputText, visitor);
                 fileName = "/adopt_dog";
                 return readTextFromFile(fileName);
             case "/safety_measures_in_dog_shelter":
@@ -88,7 +90,7 @@ public class CommandSelector {
                 //Команды, которые отображаются после выбора /cat_shelter
             case "/сat_shelter_address":
             case "/adopt_cat":
-                saveLastCommand(inputText, visitor);
+                //saveLastCommand(inputText, visitor);
                 fileName = "/adopt_cat";
                 return readTextFromFile(fileName);
             case "/safety_measures_in_cat_shelter":
@@ -109,16 +111,16 @@ public class CommandSelector {
             case "/send_report":
 
             case "/help":
-                saveLastCommand(inputText, visitor);
+                //saveLastCommand(inputText, visitor);
                 fileName = "/help";
                 return readTextFromFile(fileName);
             case "/start":
-                String welcomeText = "Здравствуйте " + visitor.getNameInChat() + "!\n\n";
+                //String welcomeText = "Здравствуйте " + visitor.getNameInChat() + "!\n\n";
                 fileName = "/start";
-                return welcomeText + readTextFromFile(fileName);
+                return readTextFromFile(fileName);
             default:
                 return "Обработка запроса еще не реализована!";
-        }
+        }*/
     }
 
     /**
@@ -139,17 +141,17 @@ public class CommandSelector {
         return new String(content);
     }
 
-    /**
+   /* *//**
      * Метод для сохранения в БД выбранной команды меню
      *
      * @param inputText
      * @param visitor
      * @author Мухаметзянов Эдуард
-     */
+     *//*
     private void saveLastCommand(String inputText, Visitor visitor) {
-        visitor.setLastCommand(inputText);
-        visitorsRepository.save(visitor);
-    }
+        //visitor.setLastCommand(inputText);
+        //visitorsRepository.save(visitor);
+    }*/
 
     /**
      * Метод для сохранения в БД выбранного типа приюта
@@ -157,9 +159,9 @@ public class CommandSelector {
      * @param inputText
      * @param visitor
      * @author Мухаметзянов Эдуард
-     */
+     *//*
     private void saveSelectedShelter(String inputText, Visitor visitor) {
-        visitor.setVisitedShelter(inputText);
-        visitorsRepository.save(visitor);
-    }
+        //visitor.setVisitedShelter(inputText);
+        //visitorsRepository.save(visitor);
+    }*/
 }
