@@ -1,5 +1,6 @@
 package bot.sky.telegrambot.bot.service;
 
+import bot.sky.telegrambot.models.Visitor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,5 +35,11 @@ public class BotMenuCreator  {
         //listOfCommands.add(new BotCommand("/volunteer", "позвать волонтера"));
         listOfCommands.add(new BotCommand("/help", "просмотр краткой справки по боту"));
         return listOfCommands;
+    }
+
+    public void createRegistrationMenu(Visitor any) {
+    }
+
+    public void createMainMenu(Visitor any) {
     }
 }
