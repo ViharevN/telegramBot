@@ -17,6 +17,7 @@ public class Cat {
     @Column(name = "catAge")
     private int age;
 
+
     public Cat(String name, String breed, int age) {
         this.name = name;
         this.breed = breed;

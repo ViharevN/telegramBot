@@ -6,10 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/** Данный класс создает меню бота, отображаемое для пользователя.
+/**
+ * Данный класс создает меню бота, отображаемое для пользователя.
  *
  * @author Мухаметзянов Эдуард
  */
@@ -18,16 +20,17 @@ import java.util.List;
 @Controller
 @Data
 @NoArgsConstructor
-public class BotMenuCreator  {
+public class BotMenuCreator {
 
     private static List<BotCommand> listOfCommands = new ArrayList<>();
 
     /**
      * Метод добавляет пункты в Меню телеграмм-бота
+     *
      * @return список (List) команд
      * @author Мухаметзянов Эдуард
      */
-    public static List<BotCommand> addCommonCommandsToBotMenu (){
+    public static List<BotCommand> addCommonCommandsToBotMenu() {
         listOfCommands.add(new BotCommand("/start", "начать общение"));
         //listOfCommands.add(new BotCommand("/about_shelter", "информация о приюте"));
         //listOfCommands.add(new BotCommand("/adopt_animal", "как взять питомца из приюта"));

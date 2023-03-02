@@ -25,6 +25,7 @@ public class Visitor {
 
     private String nameInChat;
 
+
     private String visitedShelter;
 
     private String lastCommand;

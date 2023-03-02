@@ -128,7 +128,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String[] words = text.split(";");
         //Если после деления на слова получилось меньше 4 элементов, то во введенной строке чего-то не хватает,
         //а значит и данные для регистрации введены неправильно
-        if (words.length != 4){
+        if (words.length != 4) {
             return false;
         }
         //Теперь из массива получим имя, фамилию, номер телефона и почту
