@@ -14,6 +14,9 @@ import bot.sky.telegrambot.bot.TelegramBot;
  *
  * @author Мухаметзянов Эдуард
  */
+
+// Готовый класс, не трогать !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 @Slf4j
 @Component
 public class BotInitializer {
