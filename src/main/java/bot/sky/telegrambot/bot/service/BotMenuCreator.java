@@ -1,6 +1,5 @@
 package bot.sky.telegrambot.bot.service;
 
-import bot.sky.telegrambot.models.Visitor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +14,9 @@ import java.util.List;
  *
  * @author Мухаметзянов Эдуард
  */
+
+    // Готовый класс, не трогать !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Но, внутри методов возможны изменения добавляемых команд - на работу метода это не повлияет.
 
 @Slf4j
 @Component

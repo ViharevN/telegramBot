@@ -1,8 +1,6 @@
 package bot.sky.telegrambot.bot;
 
 import bot.sky.telegrambot.models.*;
-import bot.sky.telegrambot.repository.CatShelterUsersRepository;
-import bot.sky.telegrambot.repository.DogShelterUsersRepository;
 import bot.sky.telegrambot.repository.TestUsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import bot.sky.telegrambot.bot.config.BotConfig;
 import bot.sky.telegrambot.bot.service.BotMenuCreator;
 import bot.sky.telegrambot.bot.service.CommandSelector;
-import bot.sky.telegrambot.repository.VisitorsRepository;
 
 
 /**
@@ -26,6 +23,10 @@ import bot.sky.telegrambot.repository.VisitorsRepository;
  *
  * @author Мухаметзянов Эдуард
  */
+
+// Класс нуждается в доработке:
+// - надо добавить вызов метода сохранения отчета пользователя
+// - надо добавить вызов метода (-ов) для обеспечения работы волонтера
 
 @SuppressWarnings("deprecation")
 @Slf4j

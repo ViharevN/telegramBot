@@ -1,7 +1,6 @@
 package bot.sky.telegrambot.bot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import bot.sky.telegrambot.repository.VisitorsRepository;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -14,6 +13,9 @@ import java.io.*;
  *
  * @author Мухаметзянов Эдуард
  */
+
+// Готовый класс, не трогать !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 @Slf4j
 @Component
 public class CommandSelector {
