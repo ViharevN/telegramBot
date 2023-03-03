@@ -57,7 +57,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.testUsersRepository = testUsersRepository;
         try {
             this.execute(new SetMyCommands(
-                    botMenuCreator.addFirstCommandsToBotMenu(),
+                    botMenuCreator.addCommandsForNewUser(),
                     new BotCommandScopeDefault(),
                     null));
         } catch (TelegramApiException e) {
@@ -81,9 +81,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         //Меню для такого пользователя меняем после
         else {
             String nameInChat = update.getMessage().getChat().getFirstName();
-            String textToSend = "Здравствуйте " + nameInChat + "!\n\n" +
-                    "Пожалуйста, выберите команду /start в Menu";
-            silentRegistration(chatId, textToSend);
+            //String textToSend = "Здравствуйте " + nameInChat + "!\n\n" +
+            //"Пожалуйста, выберите команду /start в Menu";
+            silentRegistration(chatId, nameInChat);
+            log.info("Новый пользователь " + nameInChat + " зарегистрирован как посетитель");
         }
 
         //Так, меню для пользователя мы обновили.
@@ -111,13 +112,31 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (inputText.startsWith("/dgrgrhtr")) {
             try {
                 execute(new SetMyCommands(
-                        botMenuCreator.addCommandsToBotMenuForVolunteer(),
+                        botMenuCreator.addCommandsForVolunteer(),
                         new BotCommandScopeDefault(),
                         null));
             } catch (TelegramApiException e) {
                 log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
             }
         }
+
+        if (inputText.equals("/dog_shelter")) {
+            if (testUsersRepository.findById(chatId).isPresent()) {
+                TestUserForMenu user = testUsersRepository.findById(chatId).get();
+                user.setVisitedShelter("/dog_shelter");
+                testUsersRepository.save(user);
+                log.info("Пользователь выбрал dog_shelter");
+            }
+        }
+        if (inputText.equals("/cat_shelter")) {
+            if (testUsersRepository.findById(chatId).isPresent()) {
+                TestUserForMenu user = testUsersRepository.findById(chatId).get();
+                user.setVisitedShelter("/cat_shelter");
+                testUsersRepository.save(user);
+                log.info("Пользователь выбрал cat_shelter");
+            }
+        }
+
         //Здесь же надо прописать обработку полученной фотографии питомца, которая является частью отчета
 
         //Если текст начинается с "отчет:", то значит пользователь добавляет отчетные данные
@@ -126,84 +145,60 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void selectMenuForUser(Long chatId) {
-        //Для удобства создадим пользователя
+        //Для удобства получим ранее зарегистрированного в БД пользователя
         TestUserForMenu testUserForMenu = testUsersRepository.findById(chatId).get();
         //Узнаем его внутренний статус и заполняем Меню под него
         //Сгруппируем по приютам
         if (testUserForMenu.getVisitedShelter().equals("/dog_shelter")) {
-            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.NOT_REGISTERED_USER) {
-                try {
-                    execute(new SetMyCommands(
-                            botMenuCreator.addDogShelterUsersCommandsToBotMenu(),
-                            new BotCommandScopeDefault(),
-                            null));
-                } catch (TelegramApiException e) {
-                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
-                }
-            }
-            //Получается, что у незарегистрированного и зарегистрированного пользователей
-            //одинаковое меню.
-            //Надо подумать как их разделить и в чем у них должна быть разница.
-            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.REGISTERED_USER) {
-                try {
-                    execute(new SetMyCommands(
-                            botMenuCreator.addDogShelterUsersCommandsToBotMenu(),
-                            new BotCommandScopeDefault(),
-                            null));
-                } catch (TelegramApiException e) {
-                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
-                }
-            }
             if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.USER_WITH_PET) {
                 try {
                     execute(new SetMyCommands(
-                            botMenuCreator.addCommandsToBotMenuForRegisteredUsersAfterAdoptDog(),
+                            botMenuCreator.addCommandsForRegisteredUsersAfterAdoptDog(),
                             new BotCommandScopeDefault(),
                             null));
                 } catch (TelegramApiException e) {
                     log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
                 }
-            }
-        }
-        if (testUserForMenu.getVisitedShelter().equals("/cat_shelter")) {
-            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.NOT_REGISTERED_USER) {
+            } else {
                 try {
                     execute(new SetMyCommands(
-                            botMenuCreator.addCatShelterUsersCommandsToBotMenu(),
+                            botMenuCreator.addCommandsForDogShelterUsers(),
                             new BotCommandScopeDefault(),
                             null));
                 } catch (TelegramApiException e) {
                     log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
                 }
-            }
-        }
-        if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.REGISTERED_USER) {
-            try {
-                execute(new SetMyCommands(
-                        botMenuCreator.addCatShelterUsersCommandsToBotMenu(),
-                        new BotCommandScopeDefault(),
-                        null));
-            } catch (TelegramApiException e) {
-                log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
-            }
-        }
-        if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.USER_WITH_PET) {
-            try {
-                execute(new SetMyCommands(
-                        botMenuCreator.addCommandsToBotMenuForRegisteredUsersAfterAdoptCat(),
-                        new BotCommandScopeDefault(),
-                        null));
-            } catch (TelegramApiException e) {
-                log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
             }
         }
 
+        if (testUserForMenu.getVisitedShelter().equals("/cat_shelter")) {
+            if (testUserForMenu.getInnerStatusUser() == InnerStatusUser.USER_WITH_PET) {
+                try {
+                    execute(new SetMyCommands(
+                            botMenuCreator.addCommandsForRegisteredUsersAfterAdoptDog(),
+                            new BotCommandScopeDefault(),
+                            null));
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
+                }
+            } else {
+                try {
+                    execute(new SetMyCommands(
+                            botMenuCreator.addCommandsForCatShelterUsers(),
+                            new BotCommandScopeDefault(),
+                            null));
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
+                }
+            }
+        }
     }
 
     private void silentRegistration(Long chatId, String nameInChat) {
         TestUserForMenu testUserForMenu = new TestUserForMenu();
         testUserForMenu.setChatId(chatId);
         testUserForMenu.setNameInChat(nameInChat);
+        testUserForMenu.setInnerStatusUser(InnerStatusUser.NOT_REGISTERED_USER);
         testUsersRepository.save(testUserForMenu);
         log.info("Новый пользователь " + nameInChat + " записан в БД");
     }
@@ -246,6 +241,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         newUser.setPhoneNumber(newPhoneNumber);
         newUser.setE_mail(newEmail);
         newUser.setVisitedShelter(selectedShelter);
+        newUser.setInnerStatusUser(InnerStatusUser.REGISTERED_USER);
         //Сохраняем экземпляр в БД
         testUsersRepository.save(newUser);
         //Возвращаем логическое значение

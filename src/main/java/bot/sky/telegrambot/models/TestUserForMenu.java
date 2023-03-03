@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class TestUserForMenu {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
 
     private String nameInChat;

@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 @Data
 @Entity
@@ -20,6 +21,7 @@ public class User {
     private String telephone_number;
     @CreationTimestamp
     private LocalDateTime firstLoginDate;
+
     @Enumerated(EnumType.STRING)
     private UserStatus personStatus;
 
