@@ -1,7 +1,6 @@
 package bot.sky.telegrambot.bot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import bot.sky.telegrambot.repository.VisitorsRepository;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -14,18 +13,12 @@ import java.io.*;
  *
  * @author Мухаметзянов Эдуард
  */
+
+// Готовый класс, не трогать !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 @Slf4j
 @Component
 public class CommandSelector {
-
-    private String pathToFiles = "src/main/resources/txt_files_for_menu";
-    private String fileName;
-
-    final VisitorsRepository visitorsRepository;
-
-    public CommandSelector(VisitorsRepository visitorsRepository) {
-        this.visitorsRepository = visitorsRepository;
-    }
 
     /**
      * Метод для обработки сообщения от пользователя телеграмм-бота.
@@ -36,9 +29,60 @@ public class CommandSelector {
      */
 
     public String selectBotCommand(String inputText) {
+        //Отдельная обработка кодового слова для входа для администратора
+        if (inputText.equals("/кодовое_слово")) {
+            return "Добро пожаловать, Администратор!";
+        }
+        //Обычная обработка команд
         return readTextFromFile(inputText);
+    }
 
-       /* switch (inputText) {
+
+    /**
+     * Метод для чтения текстовых данных из файла.
+     *
+     * @param fileName
+     * @author Мухаметзянов Эдуард
+     */
+    private String readTextFromFile(String fileName) {
+        StringBuilder content = new StringBuilder();
+        String line;
+        String pathToFiles = "src/main/resources/txt_files_for_menu";
+        String pathWithName = pathToFiles + fileName + ".txt";
+        try (BufferedReader br = new BufferedReader(new FileReader(pathWithName))) {
+            while ((line = br.readLine()) != null) content.append(line).append("\n");
+        } catch (IOException e) {
+            log.error("Ошибка чтения файла! " + e.getMessage());
+        }
+        return new String(content);
+    }
+
+   /* *//**
+     * Метод для сохранения в БД выбранной команды меню
+     *
+     * @param inputText
+     * @param visitor
+     * @author Мухаметзянов Эдуард
+     *//*
+    private void saveLastCommand(String inputText, Visitor visitor) {
+        //visitor.setLastCommand(inputText);
+        //visitorsRepository.save(visitor);
+    }*/
+
+    /**
+     * Метод для сохранения в БД выбранного типа приюта
+     *
+     * @param inputText
+     * @param visitor
+     * @author Мухаметзянов Эдуард
+     *//*
+    private void saveSelectedShelter(String inputText, Visitor visitor) {
+        //visitor.setVisitedShelter(inputText);
+        //visitorsRepository.save(visitor);
+    }*/
+}
+
+  /* switch (inputText) {
             case "/dog_shelter":
                 //saveSelectedShelter(inputText, visitor);
                 fileName = "/dog_shelter";
@@ -121,47 +165,3 @@ public class CommandSelector {
             default:
                 return "Обработка запроса еще не реализована!";
         }*/
-    }
-
-    /**
-     * Метод для чтения текстовых данных из файла.
-     *
-     * @param fileName
-     * @author Мухаметзянов Эдуард
-     */
-    private String readTextFromFile(String fileName) {
-        StringBuilder content = new StringBuilder();
-        String line;
-        String pathWithName = pathToFiles + fileName + ".txt";
-        try (BufferedReader br = new BufferedReader(new FileReader(pathWithName))) {
-            while ((line = br.readLine()) != null) content.append(line).append("\n");
-        } catch (IOException e) {
-            log.error("Ошибка чтения файла! " + e.getMessage());
-        }
-        return new String(content);
-    }
-
-   /* *//**
-     * Метод для сохранения в БД выбранной команды меню
-     *
-     * @param inputText
-     * @param visitor
-     * @author Мухаметзянов Эдуард
-     *//*
-    private void saveLastCommand(String inputText, Visitor visitor) {
-        //visitor.setLastCommand(inputText);
-        //visitorsRepository.save(visitor);
-    }*/
-
-    /**
-     * Метод для сохранения в БД выбранного типа приюта
-     *
-     * @param inputText
-     * @param visitor
-     * @author Мухаметзянов Эдуард
-     *//*
-    private void saveSelectedShelter(String inputText, Visitor visitor) {
-        //visitor.setVisitedShelter(inputText);
-        //visitorsRepository.save(visitor);
-    }*/
-}

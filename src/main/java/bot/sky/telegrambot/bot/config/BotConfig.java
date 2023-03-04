@@ -12,6 +12,8 @@ import org.springframework.context.annotation.PropertySource;
  * @author Мухаметзянов Эдуард
  */
 
+// Готовый класс, не трогать !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 @Configuration
 @Data
 @PropertySource("application.properties")

@@ -1,11 +1,9 @@
 package bot.sky.telegrambot.bot.service;
 
-import bot.sky.telegrambot.models.Visitor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 
 import java.util.ArrayList;
@@ -16,6 +14,9 @@ import java.util.List;
  *
  * @author Мухаметзянов Эдуард
  */
+
+    // Готовый класс, не трогать !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Но, внутри методов возможны изменения добавляемых команд - на работу метода это не повлияет.
 
 @Slf4j
 @Component
@@ -47,7 +48,7 @@ public class BotMenuCreator {
     //При этом сохраняется его chatId, имя (как он указал в чате) и тип приюта.
     //В зависимости от типа приюта и формируется список команд в отображаемом Меню
     //т.к. для разных приютов - разная отображаемая информация.
-    public List<BotCommand> addFirstCommandsToBotMenu(){
+    public List<BotCommand> addCommandsForNewUser(){
         listOfCommands.clear();
         listOfCommands.add(new BotCommand("/start", "начать общение"));
         listOfCommands.add(new BotCommand("/help", "просмотр краткой справки по боту"));
@@ -63,7 +64,7 @@ public class BotMenuCreator {
     //Учитывая, что все эти команды в Меню, то переход из этих информационных сообщений не нужен
     //кроме выбора /adopt_dog - там снова отображается список команд.
     //Пользователь просто снова нажимает Меню и выбирает следующий пункт этого Меню.
-    public List<BotCommand> addDogShelterUsersCommandsToBotMenu(){
+    public List<BotCommand> addCommandsForDogShelterUsers(){
         listOfCommands.clear();
         listOfCommands.add(new BotCommand("/dog_shelter_address", "адрес и местонахождение приюта, как доехать"));
         listOfCommands.add(new BotCommand("/adopt_dog", "что нужно знать, чтобы взять собаку из приюта"));
@@ -82,7 +83,7 @@ public class BotMenuCreator {
     //Учитывая, что все эти команды в Меню, то переход из этих информационных сообщений не нужен
     //кроме выбора /adopt_dog - там снова отображается список команд.
     //Пользователь просто снова нажимает Меню и выбирает следующий пункт этого Меню.
-    public List<BotCommand> addCatShelterUsersCommandsToBotMenu(){
+    public List<BotCommand> addCommandsForCatShelterUsers(){
         listOfCommands.clear();
         listOfCommands.add(new BotCommand("/сat_shelter_address", "адрес и местонахождение приюта, как доехать"));
         listOfCommands.add(new BotCommand("/adopt_cat", "что нужно знать, чтобы взять кошку из приюта"));
@@ -105,7 +106,7 @@ public class BotMenuCreator {
     // /send_report - отправить отчет по питомцу
     //Учитывая, что все эти команды в Меню, то переход из этих информационных сообщений не нужен.
     //Пользователь просто снова нажимает Меню и выбирает следующий пункт этого Меню.
-    public List<BotCommand> addCommandsToBotMenuForRegisteredUsersAfterAdoptDog(){
+    public List<BotCommand> addCommandsForRegisteredUsersAfterAdoptDog(){
         listOfCommands.clear();
         listOfCommands.add(new BotCommand("/improvement_home_for_puppy", "список рекомендаций по обустройству дома для щенка"));
         listOfCommands.add(new BotCommand("/improvement_home_for_adult_dog", "список рекомендаций по обустройству дома для взрослой собаки"));
@@ -127,7 +128,7 @@ public class BotMenuCreator {
     // /send_report - отправить отчет по питомцу
     //Учитывая, что все эти команды в Меню, то переход из этих информационных сообщений не нужен.
     //Пользователь просто снова нажимает Меню и выбирает следующий пункт этого Меню.
-    public List<BotCommand> addCommandsToBotMenuForRegisteredUsersAfterAdoptCat(){
+    public List<BotCommand> addCommandsForRegisteredUsersAfterAdoptCat(){
         listOfCommands.clear();
         listOfCommands.add(new BotCommand("/improvement_home_for_kitty", "список рекомендаций по обустройству дома для котенка"));
         listOfCommands.add(new BotCommand("/improvement_home_for_adult_cat", "список рекомендаций по обустройству дома для взрослой кошки"));
@@ -145,7 +146,7 @@ public class BotMenuCreator {
     // /view_actual_reports - посмотреть свежие/актуальные отчеты
     // /view_problems_with_reports - посмотреть проблемы с отчетами
     // /add_pet_to_user - добавить питомца к портфолио пользователя
-    public List<BotCommand> addCommandsToBotMenuForVolunteer(){
+    public List<BotCommand> addCommandsForVolunteer(){
         listOfCommands.clear();
         listOfCommands.add(new BotCommand("/view_questions", "посмотреть вопросы пользователей"));
         listOfCommands.add(new BotCommand("/view_actual_reports", "посмотреть свежие/актуальные отчеты"));
@@ -154,9 +155,9 @@ public class BotMenuCreator {
         return listOfCommands;
     }
 
-    public void createRegistrationMenu(Visitor any) {
-    }
+    //public void createRegistrationMenu(Visitor any) {
+    //}
 
-    public void createMainMenu(Visitor any) {
-    }
+    //public void createMainMenu(Visitor any) {
+    //}
 }
