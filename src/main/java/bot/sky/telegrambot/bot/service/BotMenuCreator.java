@@ -155,9 +155,9 @@ public class BotMenuCreator {
         return listOfCommands;
     }
 
-    public void createRegistrationMenu(Visitor any) {
-    }
+    //public void createRegistrationMenu(Visitor any) {
+    //}
 
-    public void createMainMenu(Visitor any) {
-    }
+    //public void createMainMenu(Visitor any) {
+    //}
 }

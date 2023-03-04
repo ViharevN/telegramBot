@@ -1,6 +1,7 @@
 package bot.sky.telegrambot.bot;
 
 import bot.sky.telegrambot.models.*;
+import bot.sky.telegrambot.repository.QuestionsRepository;
 import bot.sky.telegrambot.repository.TestUsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import bot.sky.telegrambot.bot.config.BotConfig;
 import bot.sky.telegrambot.bot.service.BotMenuCreator;
 import bot.sky.telegrambot.bot.service.CommandSelector;
+
+import java.sql.Timestamp;
 
 
 /**
@@ -33,29 +36,21 @@ import bot.sky.telegrambot.bot.service.CommandSelector;
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     final BotConfig botConfig;
-    final VisitorsRepository visitorsRepository;
-    final DogShelterUsersRepository dogShelterUsersRepository;
-    final CatShelterUsersRepository catShelterUsersRepository;
     final BotMenuCreator botMenuCreator;
     final CommandSelector commandSelector;
-
     final TestUsersRepository testUsersRepository;
-
+    final private QuestionsRepository questionsRepository;
 
     public TelegramBot(BotConfig botConfig,
-                       VisitorsRepository visitorsRepository,
-                       DogShelterUsersRepository dogShelterUsersRepository,
-                       CatShelterUsersRepository catShelterUsersRepository,
                        BotMenuCreator botMenuCreator,
                        CommandSelector commandSelector,
-                       TestUsersRepository testUsersRepository) {
+                       TestUsersRepository testUsersRepository,
+                       QuestionsRepository questionsRepository) {
         this.botConfig = botConfig;
-        this.visitorsRepository = visitorsRepository;
-        this.dogShelterUsersRepository = dogShelterUsersRepository;
-        this.catShelterUsersRepository = catShelterUsersRepository;
         this.botMenuCreator = botMenuCreator;
         this.commandSelector = commandSelector;
         this.testUsersRepository = testUsersRepository;
+        this.questionsRepository = questionsRepository;
         try {
             this.execute(new SetMyCommands(
                     botMenuCreator.addCommandsForNewUser(),
@@ -108,9 +103,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
         }
-        //Если текст начинается с секретного кода ("/dgrgrhtr"), то это заходит в чат волонтер
+        //Если текст начинается с секретного кода ("/кодовое_слово"), то это заходит в чат волонтер
         //И для него надо обновить волонтерское меню
-        if (inputText.startsWith("/dgrgrhtr")) {
+        if (inputText.equals("/кодовое_слово")) {
             try {
                 execute(new SetMyCommands(
                         botMenuCreator.addCommandsForVolunteer(),
@@ -120,8 +115,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 log.error("Ошибка формирования МЕНЮ бота: " + e.getMessage());
             }
         }
-
-        if (inputText.equals("/dog_shelter")) {
+        //Если пользователь выбирает приют для собак, то сохраняем в БД под его chatId этот выбор
+        if (inputText.equals("/dog_shelter")){
             if (testUsersRepository.findById(chatId).isPresent()) {
                 TestUserForMenu user = testUsersRepository.findById(chatId).get();
                 user.setVisitedShelter("/dog_shelter");
@@ -129,7 +124,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 log.info("Пользователь выбрал dog_shelter");
             }
         }
-        if (inputText.equals("/cat_shelter")) {
+        //Если пользователь выбирает приют для кошек, то сохраняем в БД под его chatId этот выбор
+        if (inputText.equals("/cat_shelter")){
             if (testUsersRepository.findById(chatId).isPresent()) {
                 TestUserForMenu user = testUsersRepository.findById(chatId).get();
                 user.setVisitedShelter("/cat_shelter");
@@ -138,11 +134,96 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
 
+        //Здесь сделаем обработку "админских" команд
+        //На данный момент список возможных пунктов меню следующий (! требует обсуждения и доработки! ):
+        // /view_questions - посмотреть вопросы пользователей
+        // /add_pet_to_user - добавить питомца к профилю пользователя
+        // эти команды пока не обработаны, и не ясно будут ли они в итоге !!!!
+        // /view_actual_reports - посмотреть свежие/актуальные отчеты
+        // /view_problems_with_reports - посмотреть проблемы с отчетами
+
+
+        //Обработка команды /add_pet_to_user осуществляется штатно через CommandSelector,
+        //т.е. выводится на экран инструкция для правильного добавления питомца к профилю пользователя.
+        //Значит обработаем введенную строку
+        if (inputText.startsWith("питомец:")){
+            if (addPetToUser(update)){
+                sendMessage(chatId, "Привязка питомца к пользователю успешна!");
+            } else{
+                sendMessage(chatId, "Привязка питомца к пользователю не удалась...\n" +
+                        "Попробуйте еще раз ввести данные, подсказка - см. команду /add_pet_to_user");
+            }
+        }
+        if (inputText.startsWith("вопрос:")){
+            if (addQuestion(update)){
+                sendMessage(chatId, "Уважаемый Пользователь! Ваш вопрос сохранен и будет направлен волонтеру.");
+            } else {
+                sendMessage(chatId, "Уважаемый Пользователь! Ваш вопрос не сохранен, пожалуйста внимательнее перечитайте как надо записать вопрос.");
+            }
+        }
+
         //Здесь же надо прописать обработку полученной фотографии питомца, которая является частью отчета
 
         //Если текст начинается с "отчет:", то значит пользователь добавляет отчетные данные
         //Надо продумать как маркировать команды, которые связаны с отправкой отчета !!!!
 
+    }
+
+    private boolean addQuestion(Update update) {
+        boolean questionIsAdded = false;
+        //Получаем строку из сообщения
+        String text = update.getMessage().getText();
+        //Уберем из строки уже ненужные символы
+        text = text.replaceAll("вопрос:", "");
+        QuestionFromUser question = new QuestionFromUser();
+        question.setChatId(update.getMessage().getChatId());
+        question.setQuestioner(update.getMessage().getChat().getFirstName());
+        question.setQuestion(text);
+        question.setQuestionDate(new Timestamp(System.currentTimeMillis()));
+        questionsRepository.save(question);
+        Long idSavedQuestion = question.getId();
+        if (questionsRepository.existsById(idSavedQuestion)){
+            questionIsAdded = true;
+        }
+        if (questionIsAdded) {
+            log.info("Вопрос сохранен успешно!");
+        } else {
+            log.error("Вопрос не сохранен...");
+        }
+        return questionIsAdded;
+    }
+
+    private boolean addPetToUser(Update update){
+        //Получаем строку из сообщения
+        String text = update.getMessage().getText();
+        //Уберем из строки уже ненужные символы
+        text = text.replaceAll("питомец:", "");
+        //Теперь делим полученную строку на отдельные слова
+        String[] words = text.split(";");
+        //Если после деления на слова получилось меньше 3 элементов, то во введенной строке чего-то не хватает,
+        //а значит придется ввести строку снова.
+        if (words.length != 3) {
+            return false;
+        }
+        //Теперь из массива получим chatId усыновителя, вид питомца и кличку питомца
+        String chatIdUser = words[0];
+        String typePet = words[1];
+        String namePet = words[2];
+        boolean petIsAdded = false;
+        //Найдем "усыновителя" под таким номером
+        if (testUsersRepository.findById(Long.valueOf(chatIdUser)).isPresent()) {
+            TestUserForMenu user = testUsersRepository.findById(Long.valueOf(chatIdUser)).get();
+            user.setHavePet(true);
+            user.setPetName(typePet + " " + namePet);
+            testUsersRepository.save(user);
+            petIsAdded = true;
+        }
+        if (petIsAdded) {
+            log.info("Привязка питомца к пользователю успешна!");
+        } else {
+            log.error("Привязка питомца к пользователю не удалась...");
+        }
+        return petIsAdded;
     }
 
     private void selectMenuForUser(Long chatId) {
@@ -290,6 +371,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    public void onUpdateReceived(Visitor update) {
-    }
+    //public void onUpdateReceived(Visitor update) {
+    //}
 }
