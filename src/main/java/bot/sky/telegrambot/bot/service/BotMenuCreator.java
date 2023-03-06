@@ -69,7 +69,7 @@ public class BotMenuCreator {
         listOfCommands.add(new BotCommand("/dog_shelter_address", "адрес и местонахождение приюта, как доехать"));
         listOfCommands.add(new BotCommand("/adopt_dog", "что нужно знать, чтобы взять собаку из приюта"));
         listOfCommands.add(new BotCommand("/safety_measures_in_shelter", "правила безопасности поведения на территории приюта"));
-        listOfCommands.add(new BotCommand("/register_user_for_adopt_dog", "регистрация пользователя"));
+        listOfCommands.add(new BotCommand("/register_user_for_adopt_pet", "регистрация пользователя"));
         listOfCommands.add(new BotCommand("/dogs_volunteer", "написать волонтеру о проблеме/вопросе"));
         return listOfCommands;
     }
@@ -88,7 +88,7 @@ public class BotMenuCreator {
         listOfCommands.add(new BotCommand("/сat_shelter_address", "адрес и местонахождение приюта, как доехать"));
         listOfCommands.add(new BotCommand("/adopt_cat", "что нужно знать, чтобы взять кошку из приюта"));
         listOfCommands.add(new BotCommand("/safety_measures_in_shelter", "правила безопасности поведения на территории приюта"));
-        listOfCommands.add(new BotCommand("/register_user_for_adopt_cat", "регистрация пользователя"));
+        listOfCommands.add(new BotCommand("/register_user_for_adopt_pet", "регистрация пользователя"));
         listOfCommands.add(new BotCommand("/cats_volunteer", "написать волонтеру о проблеме/вопросе"));
         return listOfCommands;
     }

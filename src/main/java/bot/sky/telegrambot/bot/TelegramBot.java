@@ -2,7 +2,7 @@ package bot.sky.telegrambot.bot;
 
 import bot.sky.telegrambot.models.*;
 import bot.sky.telegrambot.repository.QuestionsRepository;
-import bot.sky.telegrambot.repository.TestUsersRepository;
+import bot.sky.telegrambot.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -38,18 +38,18 @@ public class TelegramBot extends TelegramLongPollingBot {
     final BotConfig botConfig;
     final BotMenuCreator botMenuCreator;
     final CommandSelector commandSelector;
-    final TestUsersRepository testUsersRepository;
+    final UsersRepository usersRepository;
     final private QuestionsRepository questionsRepository;
 
     public TelegramBot(BotConfig botConfig,
                        BotMenuCreator botMenuCreator,
                        CommandSelector commandSelector,
-                       TestUsersRepository testUsersRepository,
+                       UsersRepository testUsersRepository,
                        QuestionsRepository questionsRepository) {
         this.botConfig = botConfig;
         this.botMenuCreator = botMenuCreator;
         this.commandSelector = commandSelector;
-        this.testUsersRepository = testUsersRepository;
+        this.usersRepository = testUsersRepository;
         this.questionsRepository = questionsRepository;
         try {
             this.execute(new SetMyCommands(
@@ -61,7 +61,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    //Этот метод надо глубоко переработать!
+    /**
+     * Метод обработки входящих сообщений (любых обновлений сроки чата, которые отправляет пользователь боту).
+     *
+     * @param update
+     */
     @Override
     public void onUpdateReceived(Update update) {
         //Получаем chatId - уникальный идентификатор пользователя
@@ -70,7 +74,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         //Ищем в БД такого пользователя, и уже исходя из его статуса строится дальнейшее общение
         //И обновляем Меню для пользователя, соответствующее его статусу
         //Если пользователь уже есть в БД, то меняем ему отображаемое Меню
-        if (testUsersRepository.existsById(chatId)) {
+        if (usersRepository.existsById(chatId)) {
             selectMenuForUser(chatId);
         }
         //А если такого пользователя нет, то выводим приветствие и проводим первичную (скрытую) регистрацию
@@ -117,19 +121,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         //Если пользователь выбирает приют для собак, то сохраняем в БД под его chatId этот выбор
         if (inputText.equals("/dog_shelter")){
-            if (testUsersRepository.findById(chatId).isPresent()) {
-                TestUserForMenu user = testUsersRepository.findById(chatId).get();
+            if (usersRepository.findById(chatId).isPresent()) {
+                User user = usersRepository.findById(chatId).get();
                 user.setVisitedShelter("/dog_shelter");
-                testUsersRepository.save(user);
+                usersRepository.save(user);
                 log.info("Пользователь выбрал dog_shelter");
             }
         }
         //Если пользователь выбирает приют для кошек, то сохраняем в БД под его chatId этот выбор
         if (inputText.equals("/cat_shelter")){
-            if (testUsersRepository.findById(chatId).isPresent()) {
-                TestUserForMenu user = testUsersRepository.findById(chatId).get();
+            if (usersRepository.findById(chatId).isPresent()) {
+                User user = usersRepository.findById(chatId).get();
                 user.setVisitedShelter("/cat_shelter");
-                testUsersRepository.save(user);
+                usersRepository.save(user);
                 log.info("Пользователь выбрал cat_shelter");
             }
         }
@@ -169,6 +173,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     }
 
+    /**
+     * Метод обработки вопроса пользователя для последующего сохранения в БД.
+     * @param update
+     * @return
+     */
     private boolean addQuestion(Update update) {
         boolean questionIsAdded = false;
         //Получаем строку из сообщения
@@ -193,6 +202,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         return questionIsAdded;
     }
 
+    /**
+     * Метод  - обработка команды волонтера (администратора) для добавления в профиль пользователя
+     * сведений о взятом из приюта питомце.
+     * @param update
+     * @return
+     */
     private boolean addPetToUser(Update update){
         //Получаем строку из сообщения
         String text = update.getMessage().getText();
@@ -211,11 +226,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         String namePet = words[2];
         boolean petIsAdded = false;
         //Найдем "усыновителя" под таким номером
-        if (testUsersRepository.findById(Long.valueOf(chatIdUser)).isPresent()) {
-            TestUserForMenu user = testUsersRepository.findById(Long.valueOf(chatIdUser)).get();
+        if (usersRepository.findById(Long.valueOf(chatIdUser)).isPresent()) {
+            User user = usersRepository.findById(Long.valueOf(chatIdUser)).get();
             user.setHavePet(true);
             user.setPetName(typePet + " " + namePet);
-            testUsersRepository.save(user);
+            usersRepository.save(user);
             petIsAdded = true;
         }
         if (petIsAdded) {
@@ -226,9 +241,17 @@ public class TelegramBot extends TelegramLongPollingBot {
         return petIsAdded;
     }
 
+    /**
+     * Метод выбора отображаемого Меню бота, в зависимости от статуса пользователя:
+     * - незарегистрированный пользователь;
+     * - зарегистрированный пользователь;
+     * - пользователь - "усыновитель" (который взял животное из приюта).
+     * @param chatId
+     */
+
     private void selectMenuForUser(Long chatId) {
         //Для удобства получим ранее зарегистрированного в БД пользователя
-        TestUserForMenu testUserForMenu = testUsersRepository.findById(chatId).get();
+        User testUserForMenu = usersRepository.findById(chatId).get();
         //Узнаем его внутренний статус и заполняем Меню под него
         //Сгруппируем по приютам
         if (testUserForMenu.getVisitedShelter().equals("/dog_shelter")) {
@@ -276,12 +299,20 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Метод первичной (без участия самого пользователя) регистрации нового пользователя.
+     * Первичная информация о пользователе (chatId и его никнейм в Телеграм) сохраняется в БД.
+     * Пользователю присваивается статус - незарегистрированный пользователь.
+     * @param chatId
+     * @param nameInChat
+     */
+
     private void silentRegistration(Long chatId, String nameInChat) {
-        TestUserForMenu testUserForMenu = new TestUserForMenu();
+        User testUserForMenu = new User();
         testUserForMenu.setChatId(chatId);
         testUserForMenu.setNameInChat(nameInChat);
         testUserForMenu.setInnerStatusUser(InnerStatusUser.NOT_REGISTERED_USER);
-        testUsersRepository.save(testUserForMenu);
+        usersRepository.save(testUserForMenu);
         log.info("Новый пользователь " + nameInChat + " записан в БД");
     }
 
@@ -289,6 +320,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * Метод для регистрации пользователей, которые планируют взять питомца из приюта.
      * По итогам работы метода может быть создан один из двух зарегистрированных пользователей
      * (для каждого приюта) или не создан, если введены некорректные регистрационные данные.
+     * Пользователю присваивается статус - зарегистрированный пользователь.
      *
      * @author Мухаметзянов Эдуард
      */
@@ -296,7 +328,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         //Соберем значения полей, чтобы потом их присвоить
         Long newChatId = update.getMessage().getChatId();
         String newNameInChat = update.getMessage().getChat().getFirstName();
-        String selectedShelter = testUsersRepository.findById(newChatId).get().getVisitedShelter();
+        String selectedShelter = usersRepository.findById(newChatId).get().getVisitedShelter();
         //Получаем строку из сообщения
         String text = update.getMessage().getText();
         //Удалим пробелы внутри строки
@@ -315,7 +347,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String newEmail = words[3];
 
         //Значения всех будущих полей получены, создаем экземпляр класса и заполняем его поля.
-        TestUserForMenu newUser = new TestUserForMenu();
+        User newUser = new User();
         newUser.setChatId(newChatId);
         newUser.setNameInChat(newNameInChat);
         newUser.setFirstName(newFirstName);
@@ -325,11 +357,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         newUser.setVisitedShelter(selectedShelter);
         newUser.setInnerStatusUser(InnerStatusUser.REGISTERED_USER);
         //Сохраняем экземпляр в БД
-        testUsersRepository.save(newUser);
+        usersRepository.save(newUser);
         //Возвращаем логическое значение
         //Если в БД есть пользователь с таким chatId, то вернется true
         //Если нет - вернется false
-        boolean userIsCreated = testUsersRepository.existsById(newChatId);
+        boolean userIsCreated = usersRepository.existsById(newChatId);
         if (userIsCreated) {
             log.info("Регистрация завершена успешно!");
         } else {
