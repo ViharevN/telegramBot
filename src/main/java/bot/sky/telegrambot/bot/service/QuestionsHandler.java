@@ -4,7 +4,6 @@ import bot.sky.telegrambot.models.QuestionFromUser;
 import bot.sky.telegrambot.repository.QuestionsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Slf4j

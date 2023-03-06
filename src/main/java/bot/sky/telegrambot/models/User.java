@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity(name = "userForTesting")
 @Data
 @NoArgsConstructor
-public class TestUserForMenu {
+public class User {
 
     @Id
     private Long chatId;
