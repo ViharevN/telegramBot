@@ -4,17 +4,29 @@ import bot.sky.telegrambot.configuration.BotConfig;
 import bot.sky.telegrambot.models.Report;
 import bot.sky.telegrambot.repository.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.List;
 
 @Service
 public class TelegramBot extends TelegramLongPollingBot {
+    @Value("${service.file_info.uri}")
+    private String fileInfoUri;
     @Autowired
     private ReportRepository repository;
     private BotConfig botConfig;
@@ -35,23 +47,29 @@ public class TelegramBot extends TelegramLongPollingBot {
                 System.out.println("text");
                 //photo message
             } else if (message.hasPhoto()) {
+                PhotoSize photo = message.getPhoto().get(0);
+
+                String fileId = photo.getFileId();
+                ResponseEntity<String> response = getFilePath(fileId);
+                System.out.println(response);
+                System.out.println(response.getBody());
                 System.out.println("download photo");
                 //file message
             } else if (message.hasDocument()) {
                 GetFile getFile = new GetFile(update.getMessage().getDocument().getFileId());
                 try {
+                    Report report = new Report();
                     File file = execute(getFile);
+                    String fileId = file.getFileId();
                     String url = file.getFileUrl(botConfig.getBotToken());
-                    String senderName = message.getDocument().getMimeType();
                     String userName = update.getMessage().getFrom().getFirstName();
                     String userId = update.getMessage().getFrom().getId().toString();
-                    String description = update.getMessage().getText();
-                    Report report = new Report();
-                    report.setUserName(userName);
-                    report.setFileUrl(url);
-                    report.setUserId(userId);
-                    report.setDescriptionReport(description);
-                    repository.save(report);
+                    String description = update.getMessage().getCaption();
+                            report.setUserName(userName);
+                            report.setFileUrl(url);
+                            report.setUserId(userId);
+                            report.setDescriptionReport(description);
+                            repository.save(report);
 
                 } catch (TelegramApiException e) {
                     throw new RuntimeException(e);
@@ -101,6 +119,20 @@ public class TelegramBot extends TelegramLongPollingBot {
         String answer = "Hi, " + name + ", nice to meet you!";
         sendMessage(chatId, answer);
 
+    }
+
+    private ResponseEntity<String> getFilePath(String fileId) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        return restTemplate.exchange(
+                fileInfoUri,
+                HttpMethod.GET,
+                request,
+                String.class,
+                botConfig.getBotToken(),
+                fileId
+        );
     }
 
     
