@@ -21,6 +21,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.InputStream;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -47,12 +49,30 @@ public class TelegramBot extends TelegramLongPollingBot {
                 System.out.println("text");
                 //photo message
             } else if (message.hasPhoto()) {
-                PhotoSize photo = message.getPhoto().get(0);
+//                PhotoSize photo = message.getPhoto().get(0);
+//
+//                String fileId = photo.getFileId();
+//                ResponseEntity<String> response = getFilePath(fileId);
+//                System.out.println(response);
+//                System.out.println(response.getBody());
+//                System.out.println("download photo");
+//
+//                long tgChatId = update.getMessage().getChatId();
+//                List<PhotoSize> photo = update.getMessage().getPhoto();
+//
+//                String f_id = photo.stream()
+//                        .sorted(Comparator.comparing(PhotoSize::getFileSize).reversed())
+//                        .findFirst()
+//                        .orElse(null).getFileId();
+//
+//                GetFile getFileRequest = new GetFile();
+//                getFileRequest.setFileId(update.getMessage().getPhoto().get(3).getFileId());
+//                File file = downloadFile(getFileRequest);
+//
+//                File f_path = new File("https://api.telegram.org/file/bot" + botConfig.getBotToken() + "/" + file.getFilePath());
+//
 
-                String fileId = photo.getFileId();
-                ResponseEntity<String> response = getFilePath(fileId);
-                System.out.println(response);
-                System.out.println(response.getBody());
+
                 System.out.println("download photo");
                 //file message
             } else if (message.hasDocument()) {
