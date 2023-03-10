@@ -1,91 +1,115 @@
 package bot.sky.telegrambot.service.controller;
 
-import bot.sky.telegrambot.exceptions.DogNotFoundException;
+
+import bot.sky.telegrambot.bot.service.DogService;
 import bot.sky.telegrambot.models.Dog;
-import bot.sky.telegrambot.repository.DogRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 
+import java.util.Collection;
+
+/**
+ * Class of DogController.
+ * @author
+ * @version 1.0.0
+ */
 @RestController
-@RequestMapping("/dogs/")
+@RequestMapping("dog")
 public class DogController {
-    @Autowired
-    private DogRepository repository;
 
-    @Operation(summary = "Вывод полного списка собак из приюта.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",
-                    description = "Полный список собак.")
-    })
-    @GetMapping("get/all")
-    public List<Dog> getAllDogs() {
-        return repository.findAll();
+    private final DogService service;
+
+    public DogController(DogService service) {
+        this.service = service;
     }
 
-    @Operation(summary = "Поиск собаки по id в списке приюта.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",
-                    description = "Найденная собака по задаваемому id")
-    })
-    @GetMapping("get/{id}")
-    public ResponseEntity<Dog> getDogById(@Parameter(description = "Введите id для поиска")
-                                              @PathVariable long id) {
-        Dog dog = repository.findById(id)
-                .orElseThrow(() -> new DogNotFoundException("Dog not found exist ID: " + id));
-        return ResponseEntity.ok().body(dog);
+    @Operation(summary = "Получение питомца по id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Собака, найденная по id",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Dog.class)
+                            )
+                    )
+            },
+            tags = "Dog"
+    )
+    @GetMapping("/{id}")
+    public Dog getById(@Parameter(description = "dog id") @PathVariable Long id) {
+        return this.service.getById(id);
     }
 
-    @Operation(summary = "Добавление новой собаки в список приюта.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",
-                    description = "Собака добавлена в общий список приюта.")
-    })
-    @PostMapping("/add")
-    public Dog addDog(@Parameter(description = "Введите данные собаки")
-                          @RequestBody Dog dog) {
-        return repository.save(dog);
+    @Operation(summary = "Создание собаки",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody (
+                    description = "Созданная собака",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Dog.class)
+                    )
+            ),
+            tags = "Dog"
+    )
+    @PostMapping()
+    public Dog save(@RequestBody Dog dog) {
+        return this.service.create(dog);
     }
 
-    @Operation(summary = "Изменение данных собаки по id.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",
-                    description = "Изменение данных прошло успешно.")
-    })
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<Dog> updateDog(@Parameter(description = "Введите новые данные собаки")
-                                             @RequestBody Dog dogNew,
-                                         @Parameter(description = "Введите id собаки")
-                                         @PathVariable long id) {
-        Dog dog = repository.findById(id)
-                .orElseThrow(() -> new DogNotFoundException("Dog not found exist ID: " + id));
-
-        dog.setName(dogNew.getName());
-        dog.setBreed(dogNew.getBreed());
-        dog.setAge(dogNew.getAge());
-        repository.save(dog);
-        return ResponseEntity.ok().body(dog);
+    @Operation(summary = "Изменение данных у собаки",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody (
+                    description = "Собака с измененными данными",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Dog.class)
+                    )
+            ),
+            tags = "Dog"
+    )
+    @PutMapping()
+    public Dog update(@RequestBody Dog dog) {
+        return this.service.update(dog);
     }
 
-    @Operation(summary = "Удаление собаки по id из списка приюта.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",
-                    description = "Удаления собаки из списка прошло успешно.")
-    })
-    @DeleteMapping("delete/{id}")
-    public String deleteById(@Parameter(description = "Введите id собаки")
-                                 @PathVariable long id) {
-        if (!repository.existsById(id)) {
-            throw new DogNotFoundException("Dog not found, ID:  " + id);
-        }
-        repository.deleteById(id);
-        return "Dog with id: " + id + " has been deleted";
+    @Operation(summary = "Удаление собаки по id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Удаленная собака",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Dog.class)
+                            )
+                    )
+            },
+            tags = "Dog"
+    )
+    @DeleteMapping("/{id}")
+    public void remove(@Parameter (description = "dog id")@PathVariable Long id) {
+        this.service.removeById(id);
+    }
+
+    @Operation(summary = "Просмотр всех собак",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Все собаки",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Dog.class)
+                            )
+                    )
+            },
+            tags = "Dog"
+    )
+    @GetMapping("/all")
+    public Collection<Dog> getAll() {
+        return this.service.getAll();
     }
 }
