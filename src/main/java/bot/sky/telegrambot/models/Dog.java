@@ -5,9 +5,8 @@ import java.util.Objects;
 
 /**
  * Class of dogs.
- * @author Artem Alekseev
+ * @author
  * @version 1.0.0
- * @data 01.02.2023
  */
 @Entity
 public class Dog {
