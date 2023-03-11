@@ -1,4 +1,4 @@
-package bot.sky.telegrambot.ontroller;
+package bot.sky.telegrambot.сontroller;
 
 import bot.sky.telegrambot.service.PersonDogService;
 import io.swagger.v3.oas.annotations.Operation;
