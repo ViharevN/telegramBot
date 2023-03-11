@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.telegram.telegrambots.meta.api.methods.commands.DeleteMyCommands;
-import org.telegram.telegrambots.meta.generics.TelegramBot;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.DeleteMyCommands;
 
 /**
  * @author Alexey Kuzminykh
@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.generics.TelegramBot;
 @EnableScheduling
 public class TelegramBotConfiguration {
 
-    @Value("6236177694:AAEmhn2TEUG8bWr2e0r2FVGlJipcbwTmfKI")
+    @Value("${bot.token}")
     private String token;
 
     @Bean

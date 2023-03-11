@@ -1,4 +1,4 @@
-package exceptions;
+package bot.sky.telegrambot.exceptions;
 
 public class ReportDataNotFoundException extends RuntimeException {
     /**
