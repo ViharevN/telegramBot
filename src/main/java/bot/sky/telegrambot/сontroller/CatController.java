@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
+/**
+ * Класс CatController.
+ * @author Хотенов Василий
+ */
 @RestController
 @RequestMapping("cat")
 public class CatController {
