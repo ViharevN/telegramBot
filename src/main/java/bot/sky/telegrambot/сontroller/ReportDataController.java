@@ -1,4 +1,4 @@
-package controller;
+package bot.sky.telegrambot.сontroller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
