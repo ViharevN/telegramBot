@@ -1,4 +1,4 @@
-package model;
+package bot.sky.telegrambot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;

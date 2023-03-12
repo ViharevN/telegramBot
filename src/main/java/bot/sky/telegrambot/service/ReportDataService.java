@@ -3,7 +3,7 @@ package bot.sky.telegrambot.service;
 import com.pengrad.telegrambot.model.File;
 import bot.sky.telegrambot.exceptions.ReportDataNotFoundException;
 import bot.sky.telegrambot.exceptions.PersonCatNotFoundException;
-import model.ReportData;
+import bot.sky.telegrambot.model.ReportData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;

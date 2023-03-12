@@ -1,6 +1,6 @@
 package bot.sky.telegrambot.repository;
 
-import model.ReportData;
+import bot.sky.telegrambot.model.ReportData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

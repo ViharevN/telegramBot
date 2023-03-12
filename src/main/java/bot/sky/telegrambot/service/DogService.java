@@ -3,7 +3,7 @@ package bot.sky.telegrambot.service;
 
 import bot.sky.telegrambot.exceptions.DogNotFoundException;
 import bot.sky.telegrambot.repository.DogRepository;
-import model.Dog;
+import bot.sky.telegrambot.model.Dog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

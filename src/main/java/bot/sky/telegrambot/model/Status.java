@@ -1,4 +1,4 @@
-package model;
+package bot.sky.telegrambot.model;
 
 public enum Status {
     APPROVED,
