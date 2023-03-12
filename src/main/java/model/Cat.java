@@ -13,22 +13,27 @@ import java.util.Objects;
 @Entity
 public class Cat {
 
+    /** "ID" field */
     @Id
     @GeneratedValue
     private Long id;
 
-    /** Поле "Порода" */
+    /** "Breed" field */
     private String breed;
 
-    /** Поле "Имя" */
+    /** "Name" field */
     private String name;
 
-    /** Поле "Год рождения" */
+    /** "Year Of Birth" field */
     private int yearOfBirth;
 
-    /** Поле "Описание" */
+    /** "Description" field */
     private String description;
 
+    /**
+     * Constructor - creating a new object.
+     * @see Cat
+     */
     public Cat() {
     }
 
@@ -87,7 +92,7 @@ public class Cat {
 
     @Override
     public String toString() {
-        return "Cat{" +
+        return "Dog{" +
                 "id=" + id +
                 ", breed='" + breed + '\'' +
                 ", name='" + name + '\'' +

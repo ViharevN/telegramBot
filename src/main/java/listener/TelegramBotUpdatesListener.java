@@ -15,12 +15,12 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import keyboard.KeyBoardShelter;
 import model.PersonCat;
 import model.PersonDog;
+import model.ReportData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;

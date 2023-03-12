@@ -25,7 +25,7 @@ public class CatService {
     }
 
     /**
-     * Метод поиска кота по id.
+     * Method to get a cat by id.
      * @param id
      * @return {@link CatRepository#findById(Object)}
      * @see CatService
@@ -38,7 +38,7 @@ public class CatService {
     }
 
     /**
-     * Метод создания кота.
+     * Method to create a cat.
      * @param cat
      * @return {@link CatRepository#save(Object)}
      * @see CatService
@@ -50,7 +50,7 @@ public class CatService {
     }
 
     /**
-     * Метод обновления данных о коте.
+     * Method to update a cat.
      * @param cat
      * @return {@link CatRepository#save(Object)}
      * @see CatService
@@ -68,7 +68,7 @@ public class CatService {
     }
 
     /**
-     * Метод получения всех котов.
+     * Method to get all cats.
      * @return {@link CatRepository#findAll()}
      * @see CatService
      */
@@ -79,7 +79,7 @@ public class CatService {
     }
 
     /**
-     * Метод удаления кота по id.
+     * Method to remove a cat by id.
      * @param id
      */
     public void removeById(Long id) {
@@ -87,5 +87,4 @@ public class CatService {
 
         this.repository.deleteById(id);
     }
-
 }
