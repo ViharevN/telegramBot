@@ -3,7 +3,6 @@ package bot.sky.telegrambot.service;
 import com.pengrad.telegrambot.model.File;
 import bot.sky.telegrambot.exceptions.ReportDataNotFoundException;
 import bot.sky.telegrambot.exceptions.PersonCatNotFoundException;
-import jakarta.transaction.Transactional;
 import model.ReportData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import bot.sky.telegrambot.repository.ReportDataRepository;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
