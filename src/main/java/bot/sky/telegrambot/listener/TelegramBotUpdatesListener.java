@@ -1,5 +1,8 @@
-package listener;
+package bot.sky.telegrambot.listener;
 
+import bot.sky.telegrambot.model.PersonCat;
+import bot.sky.telegrambot.model.PersonDog;
+import bot.sky.telegrambot.model.ReportData;
 import bot.sky.telegrambot.repository.PersonCatRepository;
 import bot.sky.telegrambot.repository.PersonDogRepository;
 import bot.sky.telegrambot.repository.ReportDataRepository;
@@ -12,10 +15,7 @@ import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
-import keyboard.KeyBoardShelter;
-import model.PersonCat;
-import model.PersonDog;
-import model.ReportData;
+import bot.sky.telegrambot.keyboard.KeyBoardShelter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

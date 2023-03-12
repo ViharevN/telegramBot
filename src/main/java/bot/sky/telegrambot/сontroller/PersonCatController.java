@@ -2,7 +2,7 @@ package bot.sky.telegrambot.сontroller;
 
 import bot.sky.telegrambot.service.PersonCatService;
 import io.swagger.v3.oas.annotations.Operation;
-import model.PersonCat;
+import bot.sky.telegrambot.model.PersonCat;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;

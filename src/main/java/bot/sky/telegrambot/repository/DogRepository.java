@@ -1,6 +1,6 @@
 package bot.sky.telegrambot.repository;
 
-import model.Dog;
+import bot.sky.telegrambot.model.Dog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -2,7 +2,7 @@ package bot.sky.telegrambot.service;
 
 import bot.sky.telegrambot.exceptions.CatNotFoundException;
 import bot.sky.telegrambot.repository.CatRepository;
-import model.Cat;
+import bot.sky.telegrambot.model.Cat;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,9 +1,6 @@
-package model;
+package bot.sky.telegrambot.model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;

@@ -1,7 +1,7 @@
 package bot.sky.telegrambot.service;
 import bot.sky.telegrambot.exceptions.PersonCatNotFoundException;
 import bot.sky.telegrambot.repository.PersonCatRepository;
-import model.PersonCat;
+import bot.sky.telegrambot.model.PersonCat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

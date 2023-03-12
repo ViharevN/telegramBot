@@ -2,7 +2,7 @@ package bot.sky.telegrambot.controller;
 
 import bot.sky.telegrambot.service.CatService;
 import bot.sky.telegrambot.сontroller.CatController;
-import model.Cat;
+import bot.sky.telegrambot.model.Cat;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

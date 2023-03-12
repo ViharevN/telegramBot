@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import model.Dog;
+import bot.sky.telegrambot.model.Dog;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
